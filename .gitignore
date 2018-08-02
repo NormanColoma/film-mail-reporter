@@ -58,5 +58,5 @@ docs/_build/
 target/
 venv/
 
-# PyCharm 
+# PyCharm
 .idea
