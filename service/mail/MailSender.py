@@ -2,8 +2,10 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+from service.mail.IMailSender import IMailSender
 
-class MailSender:
+
+class MailSender(IMailSender):
     def __init__(self, host, port):
         self.server = smtplib.SMTP_SSL(host, port)
 
@@ -23,4 +25,3 @@ class MailSender:
 
         msg.attach(body)
         self.server.sendmail(from_user, to_user, msg.as_string())
-

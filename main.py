@@ -1,4 +1,4 @@
-from EventReceiver import EventReceiver
+from service.EventReceiver import EventReceiver
 
 
 class MailSenderApplication:
