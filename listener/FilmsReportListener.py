@@ -1,7 +1,7 @@
 import pika
 
 from domain.repository.FilmsReportRepositoryImpl import FilmsReportRepositoryImpl
-from domain.service.mail import MailSenderImpl
+from domain.service.mail.MailSenderImpl import MailSenderImpl
 
 from config import config
 from use_case.SendFilmsReport import SendFilmsReport
