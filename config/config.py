@@ -9,3 +9,7 @@ EMAIL_SERVER = {
     'host': 'smtp.gmail.com',
     'port': 465
 }
+
+GOOGLE_CLOUD_STORAGE = {
+    'bucket': 'film-reports'
+}
