@@ -4,13 +4,14 @@ from domain.repository.FilmsReportRepositoryImpl import FilmsReportRepositoryImp
 from domain.service.mail.MailSenderImpl import MailSenderImpl
 
 from config import config
+from config import rabbitmq_config
 from use_case.SendFilmsReport import SendFilmsReport
 
 
 class FilmsReportListener:
     @staticmethod
     def callback(ch, method, properties, body):
-        print(" [x] Received %r" % body)
+        print("Event received: %r" % body)
 
         mail_service = MailSenderImpl(config.EMAIL_SERVER['host'], config.EMAIL_SERVER['port'])
         films_report_repository = FilmsReportRepositoryImpl()
@@ -19,9 +20,8 @@ class FilmsReportListener:
 
     @staticmethod
     def listen():
-        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_config.HOST))
         channel = connection.channel()
-        channel.queue_declare(queue='film-reporter')
-        channel.basic_consume(FilmsReportListener.callback, queue='film-reporter',
-                              no_ack=True)
+        channel.queue_declare(queue=rabbitmq_config.QUEUE)
+        channel.basic_consume(FilmsReportListener.callback, queue=rabbitmq_config.QUEUE, no_ack=True)
         channel.start_consuming()
