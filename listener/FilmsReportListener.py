@@ -1,6 +1,8 @@
 import pika
 
 from domain.repository.FilmsReportRepositoryImpl import FilmsReportRepositoryImpl
+from domain.repository.IFilmsReportRepository import IFilmsReportRepository
+from domain.service.mail.IMailSender import IMailSender
 from domain.service.mail.MailSenderImpl import MailSenderImpl
 
 from config import config
@@ -10,12 +12,12 @@ from use_case.SendFilmsReport import SendFilmsReport
 
 class FilmsReportListener:
     @staticmethod
-    def callback(ch, method, properties, body):
+    def callback(ch, method, properties, body: str):
         print("Event received: %r" % body)
 
-        mail_service = MailSenderImpl(config.EMAIL_SERVER['host'], config.EMAIL_SERVER['port'])
-        films_report_repository = FilmsReportRepositoryImpl()
-        send_films_report = SendFilmsReport(films_report_repository, mail_service)
+        mail_service: IMailSender = MailSenderImpl(config.EMAIL_SERVER['host'], config.EMAIL_SERVER['port'])
+        films_report_repository: IFilmsReportRepository = FilmsReportRepositoryImpl()
+        send_films_report: SendFilmsReport = SendFilmsReport(films_report_repository, mail_service)
         send_films_report.execute(body)
 
     @staticmethod
