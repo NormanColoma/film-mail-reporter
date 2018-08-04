@@ -1,9 +1,9 @@
-from service.EventReceiver import EventReceiver
+from listener.FilmsReportListener import FilmsReportListener
 
 
 class MailSenderApplication:
     def run(self):
-        EventReceiver.receive()
+        FilmsReportListener.listen()
 
 
 if __name__ == '__main__':

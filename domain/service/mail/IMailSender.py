@@ -7,5 +7,5 @@ class IMailSender(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def send(self, from_user, to_user):
+    def send(self, from_user, to_user, file_to_send):
         raise NotImplementedError

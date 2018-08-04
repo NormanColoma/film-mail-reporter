@@ -60,3 +60,7 @@ venv/
 
 # PyCharm
 .idea
+
+# APIs
+
+credentials.json
