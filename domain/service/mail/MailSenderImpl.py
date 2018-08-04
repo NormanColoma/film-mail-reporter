@@ -20,19 +20,28 @@ class MailSenderImpl(IMailSender):
             print(error)
 
     def send(self, from_user, to_user, file_to_send):
-        msg = MIMEMultipart('alternative')
-        msg['Subject'] = "Daily Films Report"
-        msg['From'] = from_user
-        msg['To'] = to_user
+        email = MIMEMultipart('alternative')
+        email['Subject'] = "Daily Films Report"
+        email['From'] = from_user
+        email['To'] = to_user
 
-        body = MIMEText('Hey there, this is the report of day!!', 'plain')
-        report = MIMEBase('application', "octet-stream")
+        email_text = 'Hey there, this is the report of today!!'
         file_path = os.path.dirname(os.path.realpath('__file__')) + '/' + file_to_send
+
+        self.__attach_plain_text(email_text, email)
+        self.__attach_file(file_to_send, file_path, email)
+        self.server.sendmail(from_user, to_user, email.as_string())
+        os.remove(file_path)
+
+    def __attach_file(self, file_name, file_path, email):
+        report = MIMEBase('application', "octet-stream")
         report.set_payload(open(file_path, "rb").read())
         encoders.encode_base64(report)
-        report.add_header('Content-Disposition', 'attachment; filename="' + file_to_send + '"')
+        report.add_header('Content-Disposition', 'attachment; filename="' + file_name + '"')
 
-        msg.attach(body)
-        msg.attach(report)
-        self.server.sendmail(from_user, to_user, msg.as_string())
-        os.remove(file_path)
+        email.attach(report)
+
+    def __attach_plain_text(self, text, email):
+        email_text = MIMEText(text, 'plain')
+
+        email.attach(email_text)
