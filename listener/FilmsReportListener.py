@@ -1,24 +1,24 @@
 import pika
 
+from config import config
+from config import rabbitmq_config
 from domain.repository.FilmsReportRepositoryImpl import FilmsReportRepositoryImpl
 from domain.repository.IFilmsReportRepository import IFilmsReportRepository
 from domain.service.mail.IMailSender import IMailSender
 from domain.service.mail.MailSenderImpl import MailSenderImpl
-
-from config import config
-from config import rabbitmq_config
 from use_case.SendFilmsReport import SendFilmsReport
 
 
 class FilmsReportListener:
     @staticmethod
-    def callback(ch, method, properties, body: str):
-        print("Event received: %r" % body)
+    def callback(ch, method, properties, body: bytes):
+        report_name: str = body.decode()
+        print("Event received: %r" % report_name)
 
         mail_service: IMailSender = MailSenderImpl(config.EMAIL_SERVER['host'], config.EMAIL_SERVER['port'])
         films_report_repository: IFilmsReportRepository = FilmsReportRepositoryImpl()
         send_films_report: SendFilmsReport = SendFilmsReport(films_report_repository, mail_service)
-        send_films_report.execute(body)
+        send_films_report.execute(report_name)
 
     @staticmethod
     def listen():

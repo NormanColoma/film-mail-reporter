@@ -12,4 +12,4 @@ class SendFilmsReport:
         films_report: str = self.films_report_repository.retrieve_report(report_name)
 
         self.mail_service.connect(config.EMAIL_CREDENTIALS['account'], config.EMAIL_CREDENTIALS['password'])
-        self.mail_service.send('normancolomagar@gmail.com', 'ua.norman@gmail.com', films_report)
+        self.mail_service.send(config.EMAIL_CREDENTIALS['account'], config.EMAIL_CREDENTIALS['to'], films_report)
