@@ -15,7 +15,6 @@ class FilmsReportListener:
         report_name: str = body.decode()
         print("Event received: %r" % report_name)
 
-
         mail_service: IMailSender = MailSenderImpl(config.EMAIL_SERVER['host'], config.EMAIL_SERVER['port'])
         films_report_repository: IFilmsReportRepository = FilmsReportRepositoryImpl()
         send_films_report: SendFilmsReport = SendFilmsReport(films_report_repository, mail_service)
