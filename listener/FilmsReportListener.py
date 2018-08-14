@@ -15,6 +15,7 @@ class FilmsReportListener:
         report_name: str = body.decode()
         print("Event received: %r" % report_name)
 
+
         mail_service: IMailSender = MailSenderImpl(config.EMAIL_SERVER['host'], config.EMAIL_SERVER['port'])
         films_report_repository: IFilmsReportRepository = FilmsReportRepositoryImpl()
         send_films_report: SendFilmsReport = SendFilmsReport(films_report_repository, mail_service)
@@ -25,5 +26,8 @@ class FilmsReportListener:
         connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_config.HOST))
         channel = connection.channel()
         channel.queue_declare(queue=rabbitmq_config.QUEUE)
+        channel.queue_bind(exchange=rabbitmq_config.EXCHANGE,
+                           queue=rabbitmq_config.QUEUE,
+                           routing_key=rabbitmq_config.ROUTING_KEY)
         channel.basic_consume(FilmsReportListener.callback, queue=rabbitmq_config.QUEUE, no_ack=True)
         channel.start_consuming()
