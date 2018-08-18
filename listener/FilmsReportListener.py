@@ -24,9 +24,13 @@ class FilmsReportListener:
     def listen():
         connection = pika.BlockingConnection(pika.ConnectionParameters(rabbitmq_config.HOST))
         channel = connection.channel()
+
         channel.queue_declare(queue=rabbitmq_config.QUEUE)
+        channel.exchange_declare(exchange=rabbitmq_config.EXCHANGE, exchange_type='direct', durable=True)
+
         channel.queue_bind(exchange=rabbitmq_config.EXCHANGE,
                            queue=rabbitmq_config.QUEUE,
                            routing_key=rabbitmq_config.ROUTING_KEY)
         channel.basic_consume(FilmsReportListener.callback, queue=rabbitmq_config.QUEUE, no_ack=True)
+
         channel.start_consuming()
